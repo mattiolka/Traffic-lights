@@ -26,7 +26,7 @@ body {
 }
 
 .red {
-    background-color: #FF4136;
+    background-color: #d23129;
     box-shadow: 0 0 10px rgba(255, 65, 54, 0.5);
 }
 
@@ -53,9 +53,9 @@ body {
 }
 
 .button-on {
-    background-color: #587852;
+    background-color: #a8cea2;
 }
 
 .button-off {
-    background-color: #734340;
+    background-color: #aa7875;
 }
