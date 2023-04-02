@@ -5,24 +5,32 @@ const green = document.querySelector('.green');
 const buttonOff = document.querySelector('.button-off');
 const buttonOn = document.querySelector('.button-on');
 
-let interval0;
-
 const colors = [
     {color: red, on: '#d23129', off: '#411715', boxShadow: '0 0 10px rgba(255, 65, 54, 0.5)'},
     {color: yellow, on: '#FFDC00', off: '#353112', boxShadow: '0 0 10px rgba(255, 220, 0, 0.5)'},
     {color: green, on: '#2ECC40', off: '#0f2a12', boxShadow: '0 0 10px rgba(46, 204, 64, 0.5)'}
     ];
 
+let current = 'green';
+let previous = null;
+let isActive;
+
 buttonOff.addEventListener('click', trafficLightsOff);
 buttonOn.addEventListener('click', trafficLightsOn);
 
 function trafficLightsOff() {
     offColors();
-;
+    isActive = false;
     buttonOff.style.backgroundColor = '#dd180e';
     buttonOn.style.backgroundColor = '#a8cea2';
-    clearInterval(interval0);
 }
+
+function trafficLightsOn() {
+    isActive = true;
+    current = 'green';
+    process();
+}
+
 
 function offColors(){
     colors.forEach(i => {
@@ -46,27 +54,55 @@ function greenOn() {
     colors[2].color.style.backgroundColor = colors[2].on;
     colors[2].color.style.boxShadow = colors[2].boxShadow;
 }
+    
+function nextCurrent() {
+    if(current == 'green'){
+        previous = current;
+        current = 'yellow';
+        return;
+    }
 
-let current = 'red';
+    if(current == 'red'){
+        previous = current;
+        current = 'yellow';
+        return;
+    }
 
-function trafficLightsOn() {
+    if(current == 'yellow'){
+        let tempCurrent = current
+        current = previous == 'green' ? 'red' : 'green';
+        previous = tempCurrent;
+        return;
+    }
+}
 
+function process(){
+    if (!isActive) return;
 
-    interval0 = setInterval(() => {
-        if(current === 'red') {
-            setTimeout(redOn, 0);
-            current = 'green';
-        } 
+    if(current == 'green'){
+        greenOn();
+        setTimeout(() => {
+            nextCurrent();
+            process();
+        }, 2000);
+    }
 
-        setTimeout(yellowOn, 1000);
+    if(current == 'red'){
+        redOn();
+        setTimeout(() => {
+            nextCurrent();
+            process();
+        }, 2000);
+    }
 
-        if(current === 'green') {
-            setTimeout(greenOn, 2000);
-            current = 'red';
-        }
-        setTimeout(yellowOn, 3000);
-        
-    }, 4000);
+    if(current == 'yellow'){
+        yellowOn();
+        setTimeout(() => {
+            nextCurrent();
+            process();
+        }, 500);
+    }
+
 
     buttonOn.style.backgroundColor = '#28df0b';
     buttonOff.style.backgroundColor = '#aa7875';
